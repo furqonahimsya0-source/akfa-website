@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
 // GET /api/promo-videos — Fetch active promo videos (public)
 export async function GET(request: NextRequest) {
   try {
+    const db = await getDb();
     const includeInactive = request.nextUrl.searchParams.get('all') === 'true';
     const videos = await db.promoVideo.findMany({
       where: includeInactive ? {} : { active: true },
@@ -21,6 +22,7 @@ export async function GET(request: NextRequest) {
 // POST /api/promo-videos — Create promo video (admin only)
 export async function POST(request: NextRequest) {
   try {
+    const db = await getDb();
     const authHeader = request.headers.get('x-admin-token');
     if (authHeader !== '030324') {
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });

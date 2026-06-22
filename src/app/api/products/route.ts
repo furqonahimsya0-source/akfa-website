@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb } from '@/lib/db';
 
 // GET /api/products — Fetch products with variants
 export async function GET(request: NextRequest) {
   try {
+    const db = await getDb();
     const searchParams = request.nextUrl.searchParams;
     const includeInactive = searchParams.get('all') === 'true';
 
@@ -23,6 +24,7 @@ export async function GET(request: NextRequest) {
 // POST /api/products — Create product with variants
 export async function POST(request: NextRequest) {
   try {
+    const db = await getDb();
     const body = await request.json();
     const { name, price, description, imageUrl, videoUrl, variants } = body;
 

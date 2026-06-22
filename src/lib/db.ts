@@ -1,15 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 
 // Turso adapter for production (cloud SQLite)
-function createPrismaClient() {
+async function createPrismaClient() {
   const dbUrl = process.env.DATABASE_URL || 'file:./dev.db';
 
   // If using Turso (libsql://), use the adapter
   if (dbUrl.startsWith('libsql://')) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { PrismaLibSQL } = require('@prisma/adapter-libsql');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { createClient } = require('@libsql/client');
+    const { PrismaLibSQL } = await import('@prisma/adapter-libsql');
+    const { createClient } = await import('@libsql/client');
 
     const libsql = createClient({
       url: dbUrl,
@@ -23,10 +21,26 @@ function createPrismaClient() {
   return new PrismaClient();
 }
 
+// Lazy singleton — initialized on first use
+let _db: PrismaClient | null = null;
+
+export async function getDb(): Promise<PrismaClient> {
+  if (!_db) {
+    _db = await createPrismaClient();
+  }
+  return _db;
+}
+
+// Synchronous fallback for non-Turso (local dev with SQLite)
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-export const db = globalForPrisma.prisma ?? createPrismaClient();
+const dbUrl = process.env.DATABASE_URL || 'file:./dev.db';
+export const db = dbUrl.startsWith('libsql://')
+  ? null as unknown as PrismaClient // placeholder, use getDb() for Turso
+  : (globalForPrisma.prisma ?? new PrismaClient());
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db;
+if (!dbUrl.startsWith('libsql://') && process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = db;
+}

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb } from '@/lib/db';
 
 // DELETE /api/products/[id] — Delete product and its variants
 export async function DELETE(
@@ -7,6 +7,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const db = await getDb();
     const { id } = await params;
     const product = await db.product.delete({ where: { id } });
     return NextResponse.json(product);
@@ -22,6 +23,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const db = await getDb();
     const { id } = await params;
     const body = await request.json();
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getDb } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,6 +9,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const db = await getDb();
     const authHeader = request.headers.get('x-admin-token');
     if (authHeader !== '030324') {
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
@@ -29,6 +30,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const db = await getDb();
     const authHeader = request.headers.get('x-admin-token');
     if (authHeader !== '030324') {
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
