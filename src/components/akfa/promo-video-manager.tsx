@@ -26,7 +26,7 @@ interface PromoVideo {
   videoUrl: string;
   thumbnailUrl: string | null;
   active: boolean;
-  order: number;
+  sortOrder: number;
 }
 
 interface PromoVideoManagerProps {
@@ -207,7 +207,7 @@ export default function PromoVideoManager({ videos, onUpdated }: PromoVideoManag
       ) : (
         <div className="space-y-2">
           {videos
-            .sort((a, b) => a.order - b.order)
+            .sort((a, b) => a.sortOrder - b.sortOrder)
             .map((video) => (
             <div key={video.id} className={`flex items-center gap-4 p-3 rounded-sm border transition-colors ${video.active ? 'bg-zinc-900/50 border-white/[0.06]' : 'bg-zinc-950 border-white/[0.03] opacity-50'}`}>
               <div className="w-10 h-10 flex items-center justify-center text-zinc-700">

@@ -31,7 +31,7 @@ interface Document {
   fileType: string;
   fileSize: number;
   active: boolean;
-  order: number;
+  sortOrder: number;
 }
 
 interface DocumentManagerProps {
@@ -225,7 +225,7 @@ export default function DocumentManager({ documents, onUpdated }: DocumentManage
       ) : (
         <div className="space-y-2">
           {documents
-            .sort((a, b) => a.order - b.order)
+            .sort((a, b) => a.sortOrder - b.sortOrder)
             .map((doc) => (
               <div key={doc.id} className={`flex items-center gap-4 p-3 rounded-sm border transition-colors ${doc.active ? 'bg-zinc-900/50 border-white/[0.06]' : 'bg-zinc-950 border-white/[0.03] opacity-50'}`}>
                 {/* File type badge */}

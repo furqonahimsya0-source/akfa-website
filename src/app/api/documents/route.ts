@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const includeInactive = request.nextUrl.searchParams.get('all') === 'true';
     const docs = await db.document.findMany({
       where: includeInactive ? {} : { active: true },
-      orderBy: { order: 'asc' },
+      orderBy: { sortOrder: 'asc' },
     });
     return NextResponse.json(docs);
   } catch (error) {
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         fileName,
         fileType: fileType || 'application/octet-stream',
         fileSize: fileSize || 0,
-        order: order ?? 0,
+        sortOrder: order ?? 0,
         active: true,
       },
     });

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const includeInactive = request.nextUrl.searchParams.get('all') === 'true';
     const videos = await db.promoVideo.findMany({
       where: includeInactive ? {} : { active: true },
-      orderBy: { order: 'asc' },
+      orderBy: { sortOrder: 'asc' },
     });
     return NextResponse.json(videos);
   } catch (error) {
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
         videoUrl,
         thumbnailUrl: thumbnailUrl || null,
         active: active ?? true,
-        order: order ?? 0,
+        sortOrder: order ?? 0,
       },
     });
 

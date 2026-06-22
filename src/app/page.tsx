@@ -37,7 +37,7 @@ interface PromoVideo {
   videoUrl: string;
   thumbnailUrl: string | null;
   active: boolean;
-  order: number;
+  sortOrder: number;
 }
 
 interface Document {
@@ -49,7 +49,7 @@ interface Document {
   fileType: string;
   fileSize: number;
   active: boolean;
-  order: number;
+  sortOrder: number;
 }
 
 export default function HomePage() {
