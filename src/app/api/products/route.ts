@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/products — Fetch products with variants
 export async function GET(request: NextRequest) {
   try {
@@ -16,8 +18,11 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(products);
   } catch (error) {
-    console.error('Error fetching products:', error);
-    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
+    console.error('[API /products GET] Error:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch products', detail: String(error) },
+      { status: 500 }
+    );
   }
 }
 
@@ -54,7 +59,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
-    console.error('Error creating product:', error);
-    return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
+    console.error('[API /products POST] Error:', error);
+    return NextResponse.json({ error: 'Failed to create product', detail: String(error) }, { status: 500 });
   }
 }
